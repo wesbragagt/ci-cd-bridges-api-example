@@ -1,0 +1,68 @@
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  # MOCK REGISTRY
+  ECR_REGISTRY: '000000000.dkr.ecr.us-east-2.amazonaws.com'
+  ECR_REPOSITORY: 'ci-cd-bridges'
+  DOCKER_BUILDKIT: 1
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+name: Run Release Please (version, tag, publish to registry)
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    outputs:
+      releases_created: ${{ steps.release.outputs.releases_created }}
+    steps:
+      - uses: google-github-actions/release-please-action@v3
+        id: release
+        with:
+          command: manifest
+          token: ${{secrets.GITHUB_TOKEN}}
+          default-branch: master
+  deploy-release:
+    needs: [release-please]
+    if: needs.release-please.outputs.releases_created
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      packages: read
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get Docker Labels
+        id: vars
+        run: |
+          echo "build_hash=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          echo "build_branch=master" >> "$GITHUB_OUTPUT"
+          echo "build_date=$(date)" >> "$GITHUB_OUTPUT"
+          echo "package_version=$(jq -r .version package.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Build and Publish Image
+        uses: docker/build-push-action@v4
+        with:
+          # The registry does not exist for example purposes
+          push: false
+          context: .
+          build-args: |
+            BUILD_HASH=${{ steps.vars.outputs.build_hash }}
+            BUILD_BRANCH=${{ steps.vars.outputs.build_branch }}
+            BUILD_TIME=${{ steps.vars.outputs.build_date }}
+          labels: |
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.source=github.com/${{ github.repository }}
+          tags: |
+            ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
+            ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:main
+            ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ steps.vars.outputs.package_version }}
+            ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:v${{ steps.vars.outputs.package_version }}
+            ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}

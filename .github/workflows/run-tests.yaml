@@ -1,0 +1,55 @@
+name: Run Tests
+on:
+  workflow_dispatch:
+    
+  pull_request:
+    paths:
+      - "src/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/run-tests.yaml"
+    branches: 
+      - master
+
+jobs:
+  unit_tests:
+    timeout-minutes: 10
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: "./.github/shared/setup"
+
+      - name: Lint & Typecheck
+        run: npm run lint
+
+      - name: Unit Tests
+        run: npm run test:unit
+
+  it_tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: "./.github/shared/setup"
+
+      - name: Integration Tests
+        run: npm run test:it
+
+  e2e_tests:
+    timeout-minutes: 10
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: isbang/compose-action@v1.5.1
+        with:
+          compose-file: "docker-compose.yaml"
+          up-flags: "-d"
+          down-flags: "--remove-orphans"
+          services: |
+            app
+
+      - name: Test Application Health
+        run: npx --yes httpyac http/health.test.http --all --var hostEndpoint="http://localhost:3002" 
