@@ -18,7 +18,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:unit": "jest --config ./test/jest-unit.json",
-    "test:it": "jest --config ./test/jest-it.json"
+    "test:it": "jest --config ./test/jest-it.json",
+    "lint:staged": "lint-staged"
   },
   "lint-staged": {
     "*.{js,ts}": [
