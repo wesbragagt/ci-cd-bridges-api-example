@@ -20,6 +20,12 @@
     "test:unit": "jest --config ./test/jest-unit.json",
     "test:it": "jest --config ./test/jest-it.json"
   },
+  "lint-staged": {
+    "*.{js,ts}": [
+      "prettier --write",
+      "eslint --fix --report-unused-disable-directives --cache"
+    ]
+  },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
@@ -28,6 +34,10 @@
     "rxjs": "^7.2.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^18.4.4",
+    "@commitlint/config-conventional": "^18.4.4",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.0.2",
     "@nestjs/cli": "^9.0.0",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^9.0.0",
