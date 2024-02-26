@@ -1,4 +1,4 @@
-FROM node:20-alpine as base
+FROM node:21-alpine as base
 # Put any tool installs here
 RUN apk add --no-cache vim 
 
