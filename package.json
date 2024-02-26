@@ -25,7 +25,7 @@
   "lint-staged": {
     "*.{js,ts}": [
       "prettier --write",
-      "eslint --fix --report-unused-disable-directives --cache"
+      "eslint --fix --report-unused-disable-directives --no-cache"
     ]
   },
   "dependencies": {
