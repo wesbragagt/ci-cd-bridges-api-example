@@ -19,7 +19,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:unit": "jest --config ./test/jest-unit.json",
     "test:it": "jest --config ./test/jest-it.json",
-    "lint:staged": "lint-staged"
+    "lint:staged": "lint-staged",
+    "commitlint": "commitlint --edit"
   },
   "lint-staged": {
     "*.{js,ts}": [
@@ -37,8 +38,6 @@
   "devDependencies": {
     "@commitlint/cli": "^18.4.4",
     "@commitlint/config-conventional": "^18.4.4",
-    "husky": "^8.0.3",
-    "lint-staged": "^15.0.2",
     "@nestjs/cli": "^9.0.0",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^9.0.0",
@@ -51,7 +50,9 @@
     "eslint": "^8.0.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "husky": "^8.0.3",
     "jest": "29.5.0",
+    "lint-staged": "^15.0.2",
     "prettier": "^2.3.2",
     "source-map-support": "^0.5.20",
     "supertest": "^6.1.3",
