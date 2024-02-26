@@ -15,6 +15,7 @@ export class AppController {
     return {
       status: 'UP',
       message: 'Service is running',
+      uptime: process.uptime(),
     };
   }
 }
