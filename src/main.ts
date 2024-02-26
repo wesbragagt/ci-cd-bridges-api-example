@@ -9,3 +9,5 @@ async function bootstrap() {
 }
 
 bootstrap();
+
+// test hook 1
