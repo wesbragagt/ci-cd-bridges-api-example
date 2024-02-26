@@ -31,8 +31,9 @@ jobs:
 
       - name: Integration Tests
         run: npm run test:it
-
   e2e_tests:
+  # These tests are valuable because they build a container image and runs a check on the live server
+  # Catch dependency update problems a lot of times that break the containier from starting up.
     timeout-minutes: 10
     name: E2E Tests
     runs-on: ubuntu-latest
