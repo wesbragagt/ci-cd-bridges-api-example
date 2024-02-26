@@ -1,0 +1,3 @@
+### https://httpyac.github.io/guide/assert.html
+GET {{hostEndpoint}}/health
+?? status == 200
